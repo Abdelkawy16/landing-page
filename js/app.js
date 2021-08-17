@@ -9,13 +9,12 @@ let UIController = function () {
         addSection: function (indrx) {
             let html, htmlObject;
             htmlObject = document.createElement('li');
-            html = `<a href="#section${indrx}">section ${indrx}</a>`;
+            html = `<a class="section${indrx}">section ${indrx}</a>`;
             htmlObject.innerHTML = html;
             document.querySelector(DOMStrings.NavbarList).insertAdjacentElement('beforeend', htmlObject);
         },
         styleNavbar: function () {
             document.querySelector('li').setAttribute('color', ' black');
-            document.querySelector('html').setAttribute('scroll-behavior', 'smooth');
         },
         isInViewPort: function (element) {
             const rect = element.getBoundingClientRect();
@@ -37,6 +36,14 @@ let controller = function (UICtrl) {
         let numOfSections = document.querySelectorAll(UICtrl.getDOMString().sec).length;
         addSections(numOfSections);
         UICtrl.styleNavbar();
+        Array.prototype.slice.call(document.querySelectorAll('a')).forEach(element => {
+            element.addEventListener('click', function (event) {
+                let rect = document.getElementById(event.target.getAttribute('class'));
+                rect.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
         document.addEventListener('scroll', setActive);
     };
     let addSections = function (num) {
@@ -47,10 +54,10 @@ let controller = function (UICtrl) {
     let setActive = function () {
         let secs = document.querySelectorAll("section");
         let secsArr = Array.prototype.slice.call(secs);
-        for (let i=0; i < secsArr.length; i++){
-            if (UICtrl.isInViewPort(secsArr[i])){
+        for (let i = 0; i < secsArr.length; i++) {
+            if (UICtrl.isInViewPort(secsArr[i])) {
                 secsArr[i].classList.add("your-active-class");
-            }else{
+            } else {
                 secsArr[i].classList.remove("your-active-class");
             }
         }
