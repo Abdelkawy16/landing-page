@@ -20,7 +20,7 @@ body {
 }
 a{
     color: #000;
-    padding: 1em 1em 0em 1em;
+    padding: 0em 1em 0em 1em;
 }
 /* Link */
 a:link, a:visited {
