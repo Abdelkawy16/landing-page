@@ -38,14 +38,7 @@ let controller = function (UICtrl) {
                 rect.scrollIntoView({
                     behavior: 'smooth'
                 });
-                [...links] = document.querySelectorAll('a');
-                links.forEach(link=>{
-                    if (link === event.target) {
-                        link.classList.add('active');
-                    }else{
-                        link.classList.remove('active');
-                    }
-                })
+                
             });
         });
         document.addEventListener('scroll', setActive);
@@ -58,12 +51,15 @@ let controller = function (UICtrl) {
     let setActive = function () {
         let secs = document.querySelectorAll("section");
         let secsArr = Array.prototype.slice.call(secs);
+        [...links] = document.querySelectorAll('a');
+        
         for (let i = 0; i < secsArr.length; i++) {
             if (UICtrl.isInViewPort(secsArr[i])) {
                 secsArr[i].classList.add("your-active-class");
-                document.querySelector(`.section${i}`).classList.add('active');
+                links[i].classList.add('active');
             } else {
                 secsArr[i].classList.remove("your-active-class");
+                links[i].classList.remove('active');
             }
         }
     };
