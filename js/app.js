@@ -13,9 +13,6 @@ let UIController = function () {
             htmlObject.innerHTML = html;
             document.querySelector(DOMStrings.NavbarList).insertAdjacentElement('beforeend', htmlObject);
         },
-        styleNavbar: function () {
-            document.querySelector('li').setAttribute('color', ' black');
-        },
         isInViewPort: function (element) {
             const rect = element.getBoundingClientRect();
             return (
@@ -35,13 +32,20 @@ let controller = function (UICtrl) {
     let setupApp = function () {
         let numOfSections = document.querySelectorAll(UICtrl.getDOMString().sec).length;
         addSections(numOfSections);
-        UICtrl.styleNavbar();
         Array.prototype.slice.call(document.querySelectorAll('a')).forEach(element => {
             element.addEventListener('click', function (event) {
-                let rect = document.getElementById(event.target.getAttribute('class'));
+                let rect = document.getElementById(event.target.getAttribute('class').split(' ')[0]);
                 rect.scrollIntoView({
                     behavior: 'smooth'
                 });
+                [...links] = document.querySelectorAll('a');
+                links.forEach(link=>{
+                    if (link === event.target) {
+                        link.classList.add('active');
+                    }else{
+                        link.classList.remove('active');
+                    }
+                })
             });
         });
         document.addEventListener('scroll', setActive);
@@ -57,6 +61,7 @@ let controller = function (UICtrl) {
         for (let i = 0; i < secsArr.length; i++) {
             if (UICtrl.isInViewPort(secsArr[i])) {
                 secsArr[i].classList.add("your-active-class");
+                document.querySelector(`.section${i}`).classList.add('active');
             } else {
                 secsArr[i].classList.remove("your-active-class");
             }
