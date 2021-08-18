@@ -2,10 +2,12 @@
 let UIController = function () {
     const DOMStrings = {
         NavbarList: '#navbar__list',
-        activeSection: '.your-active-class',
-        sec: 'section'
+        sec: 'section',
+        activeSection: "your-active-class",
+        activeClass: "active"
     };
     return {
+        // adding navigation menu
         addSection: function (indrx) {
             let html, htmlObject;
             htmlObject = document.createElement('li');
@@ -13,13 +15,24 @@ let UIController = function () {
             htmlObject.innerHTML = html;
             document.querySelector(DOMStrings.NavbarList).insertAdjacentElement('beforeend', htmlObject);
         },
-        isInViewPort: function (element) {
-            const rect = element.getBoundingClientRect();
+        // check if the section in view port
+        isInViewPort: function (el) {
+            var rect = el.getBoundingClientRect(),
+                vWidth = window.innerWidth || document.documentElement.clientWidth,
+                vHeight = window.innerHeight || document.documentElement.clientHeight,
+                efp = function (x, y) { return document.elementFromPoint(x, y) };
+
+            // Return false if it's not in the viewport
+            if (rect.right < 0 || rect.bottom < 0
+                || rect.left > vWidth || rect.top > vHeight)
+                return false;
+
+            // Return true if any of its four corners are visible
             return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                el.contains(efp(rect.left, rect.top))
+                || el.contains(efp(rect.right, rect.top))
+                || el.contains(efp(rect.right, rect.bottom))
+                || el.contains(efp(rect.left, rect.bottom))
             );
         },
         getDOMString: function () {
@@ -29,7 +42,7 @@ let UIController = function () {
 }();
 
 let controller = function (UICtrl) {
-    let setupApp = function () {
+    let setupAppListenter = function () {
         let numOfSections = document.querySelectorAll(UICtrl.getDOMString().sec).length;
         addSections(numOfSections);
         Array.prototype.slice.call(document.querySelectorAll('a')).forEach(element => {
@@ -38,7 +51,6 @@ let controller = function (UICtrl) {
                 rect.scrollIntoView({
                     behavior: 'smooth'
                 });
-                
             });
         });
         document.addEventListener('scroll', setActive);
@@ -48,25 +60,26 @@ let controller = function (UICtrl) {
             UICtrl.addSection(i);
         }
     };
+    //setting active to navbar and section
     let setActive = function () {
-        let secs = document.querySelectorAll("section");
-        let secsArr = Array.prototype.slice.call(secs);
+        let sections = document.querySelectorAll("section");
+        let sectonsArr = Array.prototype.slice.call(sections);
         [...links] = document.querySelectorAll('a');
-        
-        for (let i = 0; i < secsArr.length; i++) {
-            if (UICtrl.isInViewPort(secsArr[i])) {
-                secsArr[i].classList.add("your-active-class");
-                links[i].classList.add('active');
+
+        for (let i = 0; i < sectonsArr.length; i++) {
+            if (UICtrl.isInViewPort(sectonsArr[i])) {
+                sectonsArr[i].classList.add(UICtrl.getDOMString().activeSection);
+                links[i].classList.add(UICtrl.getDOMString().activeClass);
             } else {
-                secsArr[i].classList.remove("your-active-class");
-                links[i].classList.remove('active');
+                sectonsArr[i].classList.remove(UICtrl.getDOMString().activeSection);
+                links[i].classList.remove(UICtrl.getDOMString().activeClass);
             }
         }
     };
     return {
         init: function () {
             console.log('Application has started!');
-            setupApp();
+            setupAppListenter();
         }
     };
 }(UIController);
