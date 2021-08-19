@@ -17,7 +17,7 @@ let UIController = function () {
         },
         // check if the section in view port
         isInViewPort: function (el) {
-            var rect = el.getBoundingClientRect(),
+            let rect = el.getBoundingClientRect(),
                 vWidth = window.innerWidth || document.documentElement.clientWidth,
                 vHeight = window.innerHeight || document.documentElement.clientHeight,
                 efp = function (x, y) { return document.elementFromPoint(x, y) };
